@@ -7,14 +7,19 @@ describe CacheRipper do
     @ripper = CacheRipper.new
   end
   
-  it "can be created with an output directory" do
-    @ripper = CacheRipper.new('c:/temp')
+  it "can be created with arguments" do
+    #passing nil as a cache path prompts it to find a default
+    @ripper = CacheRipper.new('c:/temp',nil)
     @ripper.must_be_instance_of(CacheRipper)
     @ripper.output_path.wont_be_nil
+    @ripper.cache_path.wont_be_nil
   end
+ 
+    
   
   it "can be created with no arguments" do
-    #default output directory to current_dir/mp3s
+    # default output directory to current_dir/mp3s
+    # and tries to find a Chrome browser cache
     @ripper = CacheRipper.new
     @ripper.must_be_instance_of(CacheRipper)
     @ripper.output_path.wont_be_nil
