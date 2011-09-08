@@ -1,3 +1,3 @@
 source 'http://rubygems.org'
 
-gem "ruby-mp3info"
+gem 'ruby-mp3info'
