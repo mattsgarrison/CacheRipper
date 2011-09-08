@@ -7,9 +7,8 @@ class CacheRipper
     @os = detect_os
     @cache_path = detect_cache
     @output_path = output
-    #get_mp3_list
     @mp3_list = []
-
+    get_mp3_list
   end
 
   def detect_os
@@ -56,6 +55,6 @@ class CacheRipper
 end
 
 r = CacheRipper.new
-r.get_mp3_list
+#r.get_mp3_list
 puts r.mp3_list
 
