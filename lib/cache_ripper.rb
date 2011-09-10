@@ -3,11 +3,10 @@ require 'mp3info'
 class CacheRipper
   attr_accessor :os, :cache_path, :output_path, :mp3_list
 
-  def initialize(output = File.expand_path($0)+"/mp3s/", cache=nil)
+  def initialize(cache=nil)
     @os = detect_os
     @cache_path = cache
-    @cache_path ||= detect_cache
-    @output_path = output
+    @cache_path ||= detect_cache    
     @mp3_list = []
     get_mp3_list
   end
@@ -45,7 +44,8 @@ class CacheRipper
         Mp3Info.open(f) do |mp3|          
           if(!mp3.tag.empty?)
             mp3.tag[:file] = File.expand_path f
-            @mp3_list.push mp3.tag
+            mp3.tag[:name] = mp3.tag['artist'] + " - " + mp3.tag['title'] + ".mp3"
+            @mp3_list.push mp3.tag                       
           end
         end
       rescue
