@@ -41,6 +41,7 @@ describe CacheRipper do
   it "will iterate through the cache and check if ID3 tags can be found and store them" do
     #this could return nil if no MP3s exist...check that no error was thrown I guess?
     @ripper.get_mp3_list
+	#really need to mock out this process so I can define when the mp3 list is doing the right things
   end
   
   it "will move any MP3s it finds in the cache to the output location" do

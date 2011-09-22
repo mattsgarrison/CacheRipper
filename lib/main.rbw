@@ -1,3 +1,4 @@
+require 'tk'
 require 'tkextlib/tile'
 require 'fileutils'
 $: << File.dirname(__FILE__)
@@ -30,10 +31,8 @@ class CacheRipperGuiClient
   
   def find_mp3s(songs)
     @ripper = CacheRipper.new(@cache_dir)
-    #puts @ripper
-    #puts @ripper.mp3_list
+    
     @ripper.mp3_list.each do |tag_hash|      
-	  # puts tag_hash
       song = tag_hash["artist"] +" - " + tag_hash["title"]
       songs.push(song)
     end    
@@ -75,6 +74,7 @@ class CacheRipperGuiClient
     $menubar.add :cascade, :menu => file, :label => 'File'
     #$menubar.add :cascade, :menu => edit, :label => 'Edit'
     file.add :command, :label => 'Save Location...', :command => proc{choose_output}
+    file.add :command, :label => 'Exit', :command => proc{Process.exit;}
     #edit.add :command, :label => 'Cache Search Location...', :command => proc{choose_cache}
     
     @label = TkLabel.new($win) do
