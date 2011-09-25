@@ -60,6 +60,7 @@ class CacheRipper
   end
 
   def open_mp3(file)
+    puts "Checking if fibers are resuming"
     Mp3Info.open(f) do |mp3|
       if(!mp3.tag.empty? && (File.size(f) > 900000)) #setting a lower filesize limit to prevent grabbing "sample" mp3s from Amazon or whatever.  We only want full songs!
         mp3.tag[:file] = File.expand_path f
