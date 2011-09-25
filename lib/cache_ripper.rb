@@ -6,8 +6,9 @@ class CacheRipper
   def initialize(cache=nil)
     @os = detect_os
     @cache_path = cache
-    @cache_path ||= detect_cache    
+    @cache_path ||= detect_cache
     @mp3_list = []
+    @threads = []
     get_mp3_list
   end
 
@@ -40,16 +41,20 @@ class CacheRipper
   def get_mp3_list
     Dir.glob(@cache_path+"*") do |f|
       begin
-        Mp3Info.open(f) do |mp3|          
-          if(!mp3.tag.empty? && (File.size(f) > 900000)) #setting a lower filesize limit to prevent grabbing "sample" mp3s from Amazon or whatever.  We only want full songs!
-	        puts File.size(f)
-            mp3.tag[:file] = File.expand_path f
-            mp3.tag[:name] = mp3.tag['artist'] + " - " + mp3.tag['title'] + ".mp3"
-            @mp3_list.push mp3.tag                       
-          end
-        end
+        open_mp3(f)
       rescue
         #puts "Error"
+      end
+    end
+  end
+
+  def open_mp3(file)
+    Mp3Info.open(f) do |mp3|
+      if(!mp3.tag.empty? && (File.size(f) > 900000)) #setting a lower filesize limit to prevent grabbing "sample" mp3s from Amazon or whatever.  We only want full songs!
+      puts File.size(f)
+        mp3.tag[:file] = File.expand_path f
+        mp3.tag[:name] = mp3.tag['artist'] + " - " + mp3.tag['title'] + ".mp3"
+        @mp3_list.push mp3.tag
       end
     end
   end
