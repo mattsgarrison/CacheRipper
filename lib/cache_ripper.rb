@@ -9,7 +9,7 @@ class CacheRipper
     @cache_path ||= detect_cache
     @mp3_list = []
     @threads = []
-    get_mp3_list
+    #get_mp3_list
   end
 
   def detect_os
@@ -24,7 +24,11 @@ class CacheRipper
     end
     os
   end
-
+  # Chromium's code for disk caching is detailed here:
+  #   http://www.chromium.org/developers/design-documents/network-stack/disk-cache
+  #
+  # Useful blog post:
+  #   http://blog.eastfist.com/2011/01/01/accessing-content-from-google-chrome-cache/
   def detect_cache
     path = nil
     if @os == :windows
@@ -33,16 +37,22 @@ class CacheRipper
     elsif @os == :linux
       path = File.expand_path "~/.cache/google-chrome/" #tested against Ubuntu 11.10 and Chrome 10 (yeah, out of date VM)
     elsif @os == :osx
-      path = File.expand_path "~/Library/Caches/Google/Chrome/Default/Cache/" # tested against Chrome 15 on 10.7.0
+      #                        ~/Library/Caches/Google/Chrome/ 
+      path = File.expand_path "~/Library/Caches/Google/Chrome/" # tested against Chrome 15 on 10.7.0
     end
     path
   end
 
   def get_mp3_list
-    Dir.glob(@cache_path+"*") do |f|
+    Dir.glob(File.join(@cache_path,"**","*")) do |f|
+      #puts f
       begin
-        
-        open_mp3(f)
+        #attempt to do this concurrently since this is very slow
+        #@threads << Thread.new { open_mp3(f) }
+        fibers = [Fiber.current]
+        fibers << Fiber.new { open_mp3(f) }
+        fibers.each{ |f| f.resume }
+        fibers.last.resume
       rescue
         #puts "Error"
       end

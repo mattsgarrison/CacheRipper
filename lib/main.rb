@@ -30,6 +30,7 @@ class CacheRipperGuiClient
   
   def find_mp3s(songs)
     @ripper = CacheRipper.new(@cache_dir)
+    @ripper.get_mp3_list
     #puts @ripper
     #puts @ripper.mp3_list
     @ripper.mp3_list.each do |tag_hash|      
