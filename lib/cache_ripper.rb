@@ -41,6 +41,7 @@ class CacheRipper
   def get_mp3_list
     Dir.glob(@cache_path+"*") do |f|
       begin
+        
         open_mp3(f)
       rescue
         #puts "Error"
@@ -51,12 +52,19 @@ class CacheRipper
   def open_mp3(file)
     Mp3Info.open(f) do |mp3|
       if(!mp3.tag.empty? && (File.size(f) > 900000)) #setting a lower filesize limit to prevent grabbing "sample" mp3s from Amazon or whatever.  We only want full songs!
-      puts File.size(f)
         mp3.tag[:file] = File.expand_path f
         mp3.tag[:name] = mp3.tag['artist'] + " - " + mp3.tag['title'] + ".mp3"
+        friendly_filename(mp3.tag[:name])
         @mp3_list.push mp3.tag
       end
     end
+  end
+
+  #attempt to make the filenames more cross platform friendly if the ID3 info contains weird chars
+  def friendly_filename(filename)
+      filename.gsub(/[^\w\s_-]+/, '')
+      filename.gsub(/(^|\b\s)\s+($|\s?\b)/, '\\1\\2')
+      filename.gsub(/\s/, '_')
   end
 
 end
